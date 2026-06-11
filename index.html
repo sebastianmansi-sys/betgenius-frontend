@@ -1,45 +1,1578 @@
-BetGenius·AI
-⚡ Pronostici
-🎯 Multipla Builder
-📊 Tracker
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetGenius AI</title>
+<!-- 🔧 Cambia il content con l'URL del tuo backend Render dopo il deploy -->
+<meta name="betgenius-backend" content="https://betgenius-backend.onrender.com">
+<style>
+/* Fonts loaded via CSS variables with system fallbacks */
 
-LIVE
+:root{
+  --bg:#07090d;--s1:#0c1018;--s2:#111820;--s3:#162030;
+  --border:#1c2a3a;--border2:#243345;
+  --cyan:#00e5ff;--gold:#ffc840;--green:#00f090;
+  --red:#ff3d5a;--orange:#ff8c42;--purple:#b06cff;
+  --text:#ddeeff;--muted:#5a7090;--muted2:#3d5570;
+  --font-display:'Bebas Neue','Arial Black',Impact,sans-serif;
+  --font-body:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-mono:'JetBrains Mono','Courier New',Courier,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,229,255,.06),transparent);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-🏆 Tutti ⚽ Calcio 🏀 Basket 🎾 Tennis 📅 Tutti i giorni Oggi Domani Dopodomani
-🔍
-Quota:
-        Tutte≤ 2.00
-        ≤ 3.00≤ 4.00
-      
-Tipo:
-        Tutti1X2
-        Goal/NoGoalOver/Under
-        MultiGoalHandicap
-        BTTS
-      
-⚡
-Genera Pronostici AI
-ANALIZZATE
-0
-su 3 giorni
-ALTA FIDUCIA
-0
-> 75%
-QUOTA MEDIA
-—
-sui pronostici
-NEL CARRELLO
-0
-per multipla
-⚽ CALCIO
-0
-oggi 0 · dom 0 · dopo 0
-🏀 BASKET
-0
-🎾 TENNIS
-0
-🤖
-Nessun Pronostico
-Clicca "Genera Pronostici AI" per iniziare l'analisi
-⚠️ GIOCO RESPONSABILE — BetGenius AI è esclusivamente uno strumento informativo basato su AI e statistiche.
-Non garantiamo vincite. Il gioco d'azzardo può creare dipendenza. Vietato ai minori di 18 anni.
+/* HEADER */
+header{position:sticky;top:0;z-index:200;background:rgba(7,9,13,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.logo{font-family:var(--font-display);font-size:1.7rem;letter-spacing:4px;background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hnav{display:flex;gap:3px}
+.nbtn{padding:6px 13px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);font-family:var(--font-body);font-size:.79rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px;white-space:nowrap}
+.nbtn:hover{color:var(--text);border-color:var(--border2)}
+.nbtn.active{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.3);color:var(--cyan)}
+.live-pill{display:flex;align-items:center;gap:5px;background:rgba(255,61,90,.12);border:1px solid rgba(255,61,90,.35);border-radius:20px;padding:4px 12px;font-size:.7rem;font-weight:700;color:var(--red);letter-spacing:1.5px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TICKER */
+.ticker{background:var(--s2);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden}
+.ticker-track{display:flex;gap:3rem;animation:scrollT 28s linear infinite;white-space:nowrap;width:max-content}
+@keyframes scrollT{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ti{font-size:.76rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.tl{color:var(--cyan);font-weight:700;font-size:.7rem;letter-spacing:1px}
+
+/* PAGES */
+.page{display:none;position:relative;z-index:1}
+.page.active{display:block}
+.wrap{max-width:1320px;margin:0 auto;padding:1.5rem 1.2rem}
+
+/* SPORT TABS */
+.stabs{display:flex;gap:.5rem;margin-bottom:1.4rem;overflow-x:auto;padding-bottom:2px}
+.st{display:flex;align-items:center;gap:.4rem;padding:8px 18px;border-radius:40px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.st:hover{border-color:var(--cyan);color:var(--text)}
+.st.on{background:var(--cyan);border-color:var(--cyan);color:#000}
+
+/* LEAGUE CHIPS */
+.lchips{display:flex;gap:.35rem;margin-bottom:1.1rem;flex-wrap:wrap}
+.lc{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-mono)}
+.lc:hover,.lc.on{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+
+/* CONTROLS BAR */
+.cbar{display:flex;gap:.7rem;margin-bottom:1.4rem;flex-wrap:wrap;align-items:center}
+.sbox{flex:1;min-width:180px;position:relative}
+.sbox input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:9px 14px 9px 38px;color:var(--text);font-size:.86rem;font-family:var(--font-body);outline:none;transition:border-color .2s}
+.sbox input:focus{border-color:var(--cyan)}
+.sbox input::placeholder{color:var(--muted)}
+.sicon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.88rem}
+.fsel{display:flex;align-items:center;gap:.4rem;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:7px 13px;font-size:.81rem;color:var(--muted)}
+.fsel select{background:transparent;border:none;color:var(--text);font-size:.81rem;font-family:var(--font-body);outline:none;cursor:pointer}
+.fsel select option{background:var(--s2)}
+.gbtn{display:flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,var(--cyan),#00b8d4);border:none;border-radius:10px;padding:9px 20px;color:#000;font-weight:700;font-size:.86rem;font-family:var(--font-body);cursor:pointer;transition:all .2s}
+.gbtn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,229,255,.3)}
+.gbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.spin{animation:spinA 1s linear infinite}
+@keyframes spinA{to{transform:rotate(360deg)}}
+
+/* STAT ROW */
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-bottom:1.6rem}
+@media(max-width:700px){.srow{grid-template-columns:repeat(2,1fr)}}
+.sc{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:1rem;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--cyan))}
+.sc-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:.25rem}
+.sc-val{font-family:var(--font-display);font-size:1.9rem;line-height:1;color:var(--ac,var(--cyan))}
+.sc-sub{font-size:.7rem;color:var(--muted);margin-top:.15rem}
+
+/* PRED GRID */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;margin-bottom:2rem}
+@media(max-width:520px){.pgrid{grid-template-columns:1fr}}
+
+/* PRED CARD */
+.pc{background:var(--s2);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .25s;animation:fu .35s ease both;position:relative}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.pc:hover{border-color:rgba(0,229,255,.3);transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,0,0,.5)}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem .7rem;border-bottom:1px solid var(--border)}
+.ltag{display:flex;align-items:center;gap:.35rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
+.cbadge{font-family:var(--font-mono);font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.ch-h{background:rgba(0,240,144,.12);color:var(--green);border:1px solid rgba(0,240,144,.3)}
+.ch-m{background:rgba(255,140,66,.12);color:var(--orange);border:1px solid rgba(255,140,66,.3)}
+.ch-l{background:rgba(255,61,90,.12);color:var(--red);border:1px solid rgba(255,61,90,.3)}
+.ct{padding:.9rem 1rem}
+.mtime{font-family:var(--font-mono);font-size:.68rem;color:var(--cyan);text-align:center;margin-bottom:.7rem;letter-spacing:1px}
+.mu{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.team{display:flex;flex-direction:column;align-items:center;gap:.25rem;flex:1}
+.tnm{font-weight:600;font-size:.86rem;text-align:center;line-height:1.2}
+.tform{display:flex;gap:2px}
+.fd{width:6px;height:6px;border-radius:50%}
+.fw{background:var(--green)}.fm{background:var(--orange)}.fl{background:var(--red)}
+.vsbdg{font-family:var(--font-display);font-size:1.15rem;color:var(--muted2);padding:0 .7rem;flex-shrink:0}
+.pbox{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem}
+.plbl{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:.2rem}
+.pval{font-family:var(--font-display);font-size:1.3rem;color:var(--cyan);letter-spacing:.5px}
+.podds{display:flex;align-items:center;justify-content:space-between;margin-top:.4rem}
+.ob{font-family:var(--font-mono);font-size:1rem;font-weight:700;color:var(--gold);background:rgba(255,200,64,.1);padding:3px 10px;border-radius:7px;border:1px solid rgba(255,200,64,.22)}
+.btlbl{font-size:.72rem;color:var(--muted);background:var(--s1);padding:2px 8px;border-radius:5px}
+.ks{display:flex;gap:.3rem;padding:0 1rem .75rem;flex-wrap:wrap}
+.kp{font-size:.66rem;color:var(--muted);background:var(--s1);padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+.kp strong{color:var(--text)}
+.ca{padding:0 1rem .8rem}
+.at{font-size:.78rem;color:var(--muted);line-height:1.6}
+.ald{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--cyan)}
+.tdots{display:flex;gap:3px}
+.tdots span{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:td 1.2s infinite}
+.tdots span:nth-child(2){animation-delay:.2s}.tdots span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+
+/* CARD ACTIONS */
+.card-actions{display:flex;gap:.5rem;padding:0 1rem .85rem}
+
+/* MARKET TABS inside card */
+.mk-tabs{display:flex;gap:3px;padding:.4rem .8rem 0;flex-wrap:wrap;border-top:1px solid var(--border)}
+.mk-tab{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.68rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-body);white-space:nowrap}
+.mk-tab:hover{border-color:var(--border2);color:var(--text)}
+.mk-tab.on{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+.mk-panel{animation:fu .2s ease}
+.ca-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.35rem;padding:7px;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-body);border:1px solid}
+.ca-btn-add{background:rgba(0,240,144,.07);border-color:rgba(0,240,144,.25);color:var(--green)}
+.ca-btn-add:hover{background:rgba(0,240,144,.14);border-color:rgba(0,240,144,.45)}
+.ca-btn-multi{background:rgba(176,108,255,.07);border-color:rgba(176,108,255,.25);color:var(--purple)}
+.ca-btn-multi:hover{background:rgba(176,108,255,.14);border-color:rgba(176,108,255,.45)}
+/* in-basket indicator */
+.in-basket-dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);display:none}
+.pc.in-basket .in-basket-dot{display:block}
+.pc.in-basket{border-color:rgba(176,108,255,.35)}
+
+/* EMPTY */
+.empty{text-align:center;padding:3.5rem 2rem;color:var(--muted);grid-column:1/-1}
+.eico{font-size:3rem;opacity:.22;margin-bottom:.7rem}
+.etit{font-family:var(--font-display);font-size:1.5rem;letter-spacing:2px;opacity:.28;margin-bottom:.3rem;color:var(--text)}
+
+/* ══════════════ MULTIPLA BUILDER PANEL ══════════════ */
+.multi-panel{background:var(--s2);border:1px solid var(--border2);border-radius:16px;margin-bottom:1.5rem;overflow:hidden}
+.mp-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;border-bottom:1px solid var(--border);background:rgba(176,108,255,.05)}
+.mp-title{display:flex;align-items:center;gap:.6rem;font-family:var(--font-display);font-size:1.25rem;letter-spacing:2px;color:var(--purple)}
+.mp-badge{background:var(--purple);color:#000;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;font-family:var(--font-mono)}
+.mp-actions{display:flex;align-items:center;gap:.5rem}
+.mp-clear{background:rgba(255,61,90,.08);border:1px solid rgba(255,61,90,.25);border-radius:7px;padding:5px 12px;color:var(--red);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.mp-clear:hover{background:rgba(255,61,90,.15)}
+.mp-gen-ai{background:rgba(176,108,255,.12);border:1px solid rgba(176,108,255,.3);border-radius:7px;padding:5px 14px;color:var(--purple);font-size:.74rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-body);display:flex;align-items:center;gap:.3rem}
+.mp-gen-ai:hover{background:rgba(176,108,255,.22)}
+.mp-gen-ai:disabled{opacity:.4;cursor:not-allowed}
+.mp-body{padding:1rem 1.2rem}
+.mp-empty{text-align:center;padding:1.5rem;color:var(--muted);font-size:.84rem}
+.mp-empty-ico{font-size:2rem;opacity:.25;margin-bottom:.4rem}
+.mp-legs{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.mp-leg{display:flex;align-items:center;gap:.7rem;background:rgba(176,108,255,.06);border:1px solid rgba(176,108,255,.18);border-radius:10px;padding:.6rem .9rem}
+.mp-leg-num{font-family:var(--font-display);font-size:1.2rem;color:var(--purple);flex-shrink:0;width:20px;text-align:center}
+.mp-leg-info{flex:1;min-width:0}
+.mp-leg-match{font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-leg-sel{font-size:.72rem;color:var(--muted);margin-top:1px}
+.mp-leg-odds{font-family:var(--font-mono);font-size:.9rem;font-weight:700;color:var(--gold);flex-shrink:0}
+.mp-leg-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.9rem;padding:2px 4px;transition:color .2s;flex-shrink:0}
+.mp-leg-del:hover{color:var(--red)}
+.mp-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.mp-total{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.mp-tot-item{text-align:center}
+.mp-tot-lbl{font-size:.63rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.mp-tot-val{font-family:var(--font-display);font-size:1.4rem;color:var(--text)}
+.mp-tot-val.gold{color:var(--gold)}
+.mp-tot-val.purple{color:var(--purple)}
+.mp-save-btn{display:flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,var(--purple),#8b42ff);border:none;border-radius:10px;padding:9px 20px;color:#fff;font-weight:700;font-size:.86rem;font-family:var(--font-body);cursor:pointer;transition:all .2s}
+.mp-save-btn:hover{box-shadow:0 4px 18px rgba(176,108,255,.4);transform:translateY(-1px)}
+.mp-save-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.mp-stake-wrap{display:flex;align-items:center;gap:.5rem}
+.mp-stake-lbl{font-size:.75rem;color:var(--muted)}
+.mp-stake-inp{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:.86rem;font-family:var(--font-mono);outline:none;width:80px;text-align:center;transition:border-color .2s}
+.mp-stake-inp:focus{border-color:var(--purple)}
+.euro{color:var(--muted);font-size:.82rem}
+
+/* AI MULTI SUGGESTIONS */
+.ai-multi-wrap{margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.ai-multi-lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--purple);margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.ai-multi-cards{display:flex;gap:.6rem;flex-wrap:wrap}
+.ai-mc{background:rgba(176,108,255,.07);border:1px solid rgba(176,108,255,.2);border-radius:10px;padding:.7rem;cursor:pointer;transition:all .2s;min-width:140px;flex:1}
+.ai-mc:hover{background:rgba(176,108,255,.14);border-color:rgba(176,108,255,.4)}
+.ai-mc-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.3rem}
+.ai-mc-sel{font-size:.8rem;font-weight:600;line-height:1.4;margin-bottom:.3rem}
+.ai-mc-odds{font-family:var(--font-mono);font-size:.85rem;font-weight:700;color:var(--gold)}
+.ai-mc-conf{font-size:.68rem;color:var(--muted);margin-top:.2rem}
+
+/* ══════════ TRACKER PAGE ══════════ */
+.tracker-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:.8rem}
+.thtit{font-family:var(--font-display);font-size:1.7rem;letter-spacing:3px}
+.thtit span{color:var(--cyan)}
+.th-actions{display:flex;gap:.5rem}
+.add-manual-btn{display:flex;align-items:center;gap:.4rem;background:rgba(0,240,144,.09);border:1px solid rgba(0,240,144,.28);border-radius:10px;padding:8px 16px;color:var(--green);font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.add-manual-btn:hover{background:rgba(0,240,144,.17)}
+.add-multi-manual-btn{display:flex;align-items:center;gap:.4rem;background:rgba(176,108,255,.09);border:1px solid rgba(176,108,255,.28);border-radius:10px;padding:8px 16px;color:var(--purple);font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.add-multi-manual-btn:hover{background:rgba(176,108,255,.17)}
+
+/* CHART */
+.chart-wrap{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1.4rem}
+.chart-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.chart-title{font-family:var(--font-display);font-size:1.2rem;letter-spacing:2px}
+.ctogs{display:flex;gap:.35rem}
+.ctog{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-mono)}
+.ctog.on{background:rgba(0,229,255,.12);border-color:var(--cyan);color:var(--cyan)}
+.chart-canvas-wrap{position:relative;height:230px}
+
+/* TRACKER STATS */
+.tstat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-bottom:1.4rem}
+@media(max-width:900px){.tstat-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.tstat-row{grid-template-columns:repeat(2,1fr)}}
+.tsc{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.9rem;position:relative;overflow:hidden}
+.tsc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--cyan))}
+.tsc-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.2rem}
+.tsc-val{font-family:var(--font-display);font-size:1.6rem;line-height:1;color:var(--ac,var(--cyan))}
+.tsc-sub{font-size:.67rem;color:var(--muted);margin-top:.12rem}
+
+/* DIST ROW */
+.dist-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:1.4rem}
+@media(max-width:700px){.dist-row{grid-template-columns:repeat(2,1fr)}}
+.dist-card{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:.9rem}
+.dist-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.dist-type{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.dist-count{font-family:var(--font-mono);font-size:.76rem;color:var(--muted)}
+.dist-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:.4rem}
+.dist-bar{height:100%;border-radius:2px;transition:width .6s ease}
+.dist-stats{display:flex;gap:.7rem;font-size:.7rem;color:var(--muted)}
+.dist-stats strong{color:var(--text)}
+
+/* BET TABS */
+.bet-tabs{display:flex;gap:.35rem;margin-bottom:1rem}
+.btab{padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.btab:hover{border-color:var(--border2);color:var(--text)}
+.btab.on{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+.btab.multi-on{background:rgba(176,108,255,.1);border-color:var(--purple);color:var(--purple)}
+
+/* BET TABLE */
+.bet-table-wrap{background:var(--s2);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.4rem}
+.bth{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;border-bottom:1px solid var(--border)}
+.bth-title{font-family:var(--font-display);font-size:1.1rem;letter-spacing:2px}
+.bfils{display:flex;gap:.35rem}
+.bfil{padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.7rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-mono)}
+.bfil.on{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+.bet-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.bet-table th{text-align:left;padding:7px 11px;color:var(--muted);font-size:.64rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);font-weight:600}
+.bet-table td{padding:9px 11px;border-bottom:1px solid rgba(28,42,58,.5);vertical-align:middle}
+.bet-table tr:last-child td{border-bottom:none}
+.bet-table tr:hover td{background:rgba(0,229,255,.02)}
+.btag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:.66rem;font-weight:700;font-family:var(--font-mono);letter-spacing:.3px}
+.btag-1x2{background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.25)}
+.btag-goal{background:rgba(0,240,144,.12);color:var(--green);border:1px solid rgba(0,240,144,.25)}
+.btag-over{background:rgba(255,200,64,.12);color:var(--gold);border:1px solid rgba(255,200,64,.25)}
+.btag-multi{background:rgba(176,108,255,.12);color:var(--purple);border:1px solid rgba(176,108,255,.25)}
+.btag-hcp{background:rgba(255,140,66,.12);color:var(--orange);border:1px solid rgba(255,140,66,.25)}
+.btag-btts{background:rgba(255,61,90,.12);color:var(--red);border:1px solid rgba(255,61,90,.25)}
+.btag-uo{background:rgba(255,200,64,.12);color:var(--gold);border:1px solid rgba(255,200,64,.25)}
+.btag-parlay{background:linear-gradient(135deg,rgba(176,108,255,.25),rgba(0,229,255,.1));color:var(--purple);border:1px solid rgba(176,108,255,.4);font-size:.65rem}
+.res-pill{display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:700}
+.res-w{background:rgba(0,240,144,.12);color:var(--green)}
+.res-l{background:rgba(255,61,90,.12);color:var(--red)}
+.res-p{background:rgba(90,112,144,.1);color:var(--muted);border:1px solid var(--border)}
+.profit-pos{color:var(--green);font-family:var(--font-mono);font-weight:600}
+.profit-neg{color:var(--red);font-family:var(--font-mono);font-weight:600}
+.profit-zero{color:var(--muted);font-family:var(--font-mono)}
+.del-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.85rem;padding:3px;border-radius:4px;transition:color .2s}
+.del-btn:hover{color:var(--red)}
+
+/* MULTIPLA ROW expand */
+.parlay-row{background:rgba(176,108,255,.04)}
+.parlay-legs-cell{padding:0 11px 10px !important}
+.parlay-legs{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+.pl-leg{display:flex;align-items:center;gap:.5rem;font-size:.73rem;color:var(--muted);padding:3px 0}
+.pl-leg-num{font-family:var(--font-display);font-size:.95rem;color:var(--purple);width:16px;text-align:center;flex-shrink:0}
+.pl-leg-text{flex:1}
+.pl-leg-odds-sm{font-family:var(--font-mono);font-size:.73rem;color:var(--gold);flex-shrink:0}
+.expand-btn{background:none;border:none;color:var(--purple);cursor:pointer;font-size:.82rem;padding:2px 6px;border-radius:4px;transition:all .2s}
+.expand-btn:hover{background:rgba(176,108,255,.1)}
+
+/* NO BETS */
+.no-bets{text-align:center;padding:2.5rem;color:var(--muted)}
+.nbi{font-size:2.2rem;opacity:.22;margin-bottom:.4rem}
+
+/* ══════ MODALS ══════ */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(10px);z-index:400;align-items:center;justify-content:center;padding:1rem}
+.moverlay.open{display:flex}
+.modal{background:var(--s2);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;animation:min .28s ease}
+.modal.wide{max-width:560px}
+@keyframes min{from{opacity:0;transform:scale(.95) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.4rem;border-bottom:1px solid var(--border)}
+.mh-title{font-family:var(--font-display);font-size:1.35rem;letter-spacing:2px}
+.mh-title.cyan{color:var(--cyan)}
+.mh-title.purple{color:var(--purple)}
+.mx{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;line-height:1;padding:3px;transition:color .2s}
+.mx:hover{color:var(--text)}
+.mb{padding:1.2rem 1.4rem}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.7rem}
+.ff{grid-column:1/-1}
+.fg{display:flex;flex-direction:column;gap:.3rem}
+.fl-lbl{font-size:.67rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600}
+.fi{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:7px 11px;color:var(--text);font-size:.85rem;font-family:var(--font-body);outline:none;transition:border-color .2s;width:100%}
+.fi:focus{border-color:var(--cyan)}
+.fi::placeholder{color:var(--muted2)}
+.fs{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:7px 11px;color:var(--text);font-size:.85rem;font-family:var(--font-body);outline:none;cursor:pointer;transition:border-color .2s;width:100%}
+.fs:focus{border-color:var(--cyan)}
+.fs option{background:var(--s1)}
+.mfoot{display:flex;gap:.6rem;padding-top:.5rem}
+.mcancel{flex:1;padding:8px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font-body);font-size:.84rem;cursor:pointer;transition:all .2s}
+.mcancel:hover{border-color:var(--border2);color:var(--text)}
+.msave{flex:2;padding:8px;border-radius:9px;border:none;font-family:var(--font-body);font-size:.84rem;font-weight:700;cursor:pointer;transition:all .2s;color:#000}
+.msave.green{background:linear-gradient(135deg,var(--green),#00c070)}
+.msave.purple{background:linear-gradient(135deg,var(--purple),#8b42ff);color:#fff}
+.msave:hover{box-shadow:0 4px 14px rgba(0,240,144,.3);transform:translateY(-1px)}
+
+/* DETAIL MODAL */
+.dm-sec{margin-bottom:1.1rem}
+.dm-stit{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding-bottom:.35rem;border-bottom:1px solid var(--border);margin-bottom:.5rem}
+.dm-text{font-size:.84rem;line-height:1.7}
+.otable{width:100%;border-collapse:collapse;font-size:.78rem}
+.otable th{text-align:left;padding:5px 7px;color:var(--muted);font-size:.63rem;text-transform:uppercase;letter-spacing:.8px}
+.otable td{padding:6px 7px;border-top:1px solid var(--border)}
+.hl{color:var(--gold);font-weight:700;font-family:var(--font-mono)}
+
+/* PARLAY MODAL - legs in form */
+.parlay-leg-form{background:rgba(176,108,255,.05);border:1px solid rgba(176,108,255,.18);border-radius:10px;padding:.8rem;margin-bottom:.6rem;position:relative}
+.plf-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.plf-num{font-family:var(--font-display);font-size:1.1rem;color:var(--purple)}
+.plf-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.9rem;transition:color .2s}
+.plf-del:hover{color:var(--red)}
+.add-leg-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:7px;border-radius:8px;border:1px dashed rgba(176,108,255,.35);background:rgba(176,108,255,.04);color:var(--purple);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-body);margin-bottom:.8rem}
+.add-leg-btn:hover{background:rgba(176,108,255,.1);border-color:rgba(176,108,255,.5)}
+.parlay-summary{background:rgba(176,108,255,.07);border:1px solid rgba(176,108,255,.2);border-radius:8px;padding:.7rem;margin-bottom:.8rem;display:flex;justify-content:space-around;text-align:center}
+.ps-item .ps-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.ps-item .ps-val{font-family:var(--font-display);font-size:1.3rem;color:var(--purple)}
+.ps-item .ps-val.gold{color:var(--gold)}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--s3);border:1px solid var(--border2);border-radius:12px;padding:.75rem 1.1rem;font-size:.81rem;color:var(--text);z-index:500;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;display:flex;align-items:center;gap:.4rem}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ok{border-color:rgba(0,240,144,.4);background:rgba(0,240,144,.06)}
+.toast.err{border-color:rgba(255,61,90,.4);background:rgba(255,61,90,.06)}
+
+footer{border-top:1px solid var(--border);padding:1.2rem 1.5rem;text-align:center;font-size:.71rem;color:var(--muted);line-height:1.9;position:relative;z-index:1}
+footer strong{color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">BetGenius·AI</div>
+  <div class="hnav">
+    <button class="nbtn active" onclick="showPage('pronostici',this)">⚡ Pronostici</button>
+    <button class="nbtn" onclick="showPage('multipla',this)">🎯 Multipla Builder</button>
+    <button class="nbtn" onclick="showPage('tracker',this)">📊 Tracker</button>
+  </div>
+  <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+  <div id="lastUpdated" style="font-size:.68rem;color:var(--muted);font-family:monospace;display:none"></div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<!-- ═══════════ PAGE: PRONOSTICI ═══════════ -->
+<div class="page active" id="page-pronostici">
+<div class="wrap">
+  <div class="stabs">
+    <button class="st on" onclick="setSport('all',this)">🏆 Tutti</button>
+    <button class="st" onclick="setSport('calcio',this)">⚽ Calcio</button>
+    <button class="st" onclick="setSport('basket',this)">🏀 Basket</button>
+    <button class="st" onclick="setSport('tennis',this)">🎾 Tennis</button>
+  </div>
+  <div class="stabs" style="margin-top:-.8rem">
+    <button class="st on" onclick="setDay('all',this)" id="day-all">📅 Tutti i giorni</button>
+    <button class="st" onclick="setDay('Oggi',this)" id="day-oggi">Oggi</button>
+    <button class="st" onclick="setDay('Domani',this)" id="day-domani">Domani</button>
+    <button class="st" onclick="setDay('Dopodomani',this)" id="day-dopo">Dopodomani</button>
+  </div>
+  <div class="lchips" id="lchips"></div>
+  <div class="cbar">
+    <div class="sbox"><span class="sicon">🔍</span><input type="text" id="searchInp" placeholder="Cerca squadra, campionato..." oninput="filterPreds()"></div>
+    <div class="fsel"><span>Quota:</span>
+      <select id="oddsF" onchange="filterPreds()">
+        <option value="all">Tutte</option><option value="2">≤ 2.00</option>
+        <option value="3" selected>≤ 3.00</option><option value="4">≤ 4.00</option>
+      </select>
+    </div>
+    <div class="fsel"><span>Tipo:</span>
+      <select id="typeF" onchange="filterPreds()">
+        <option value="all">Tutti</option><option value="1X2">1X2</option>
+        <option value="Goal/NoGoal">Goal/NoGoal</option><option value="Over/Under">Over/Under</option>
+        <option value="MultiGoal">MultiGoal</option><option value="Handicap">Handicap</option>
+        <option value="BTTS">BTTS</option>
+      </select>
+    </div>
+    <button class="gbtn" id="genBtn" onclick="generateAll()"><span id="genIco">⚡</span> Genera Pronostici AI</button>
+  </div>
+  <div class="srow">
+    <div class="sc" style="--ac:var(--cyan)"><div class="sc-lbl">Analizzate</div><div class="sc-val" id="s-total">0</div><div class="sc-sub">su 3 giorni</div></div>
+    <div class="sc" style="--ac:var(--green)"><div class="sc-lbl">Alta Fiducia</div><div class="sc-val" id="s-high">0</div><div class="sc-sub">> 75%</div></div>
+    <div class="sc" style="--ac:var(--gold)"><div class="sc-lbl">Quota Media</div><div class="sc-val" id="s-avg">—</div><div class="sc-sub">sui pronostici</div></div>
+    <div class="sc" style="--ac:var(--purple)"><div class="sc-lbl">Nel Carrello</div><div class="sc-val" id="s-basket">0</div><div class="sc-sub">per multipla</div></div>
+  </div>
+  <div class="srow" style="grid-template-columns:repeat(3,1fr);margin-top:-.6rem">
+    <div class="sc" style="--ac:var(--cyan)"><div class="sc-lbl">⚽ Calcio</div><div class="sc-val" id="s-calcio">0</div><div class="sc-sub" id="s-oggi-sub">oggi 0 · dom 0 · dopo 0</div></div>
+    <div class="sc" style="--ac:var(--orange)"><div class="sc-lbl">🏀 Basket</div><div class="sc-val" id="s-basket-count">0</div></div>
+    <div class="sc" style="--ac:var(--green)"><div class="sc-lbl">🎾 Tennis</div><div class="sc-val" id="s-tennis">0</div></div>
+  </div>
+  <div class="pgrid" id="pgrid">
+    <div class="empty" id="emptyPreds"><div class="eico">🤖</div><div class="etit">Nessun Pronostico</div><div>Clicca "Genera Pronostici AI" per iniziare l'analisi</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ PAGE: MULTIPLA BUILDER ═══════════ -->
+<div class="page" id="page-multipla">
+<div class="wrap">
+
+  <!-- MAIN PANEL -->
+  <div class="multi-panel">
+    <div class="mp-header">
+      <div class="mp-title">🎯 Costruttore Multipla <span class="mp-badge" id="mp-count-badge">0 gambe</span></div>
+      <div class="mp-actions">
+        <button class="mp-gen-ai" id="aiMultiBtn" onclick="generateAIMulti()"><span id="aiMultiIco">✨</span> Suggerisci AI</button>
+        <button class="mp-clear" onclick="clearBasket()">🗑 Svuota</button>
+      </div>
+    </div>
+    <div class="mp-body">
+      <div id="mpLegsWrap">
+        <div class="mp-empty" id="mpEmpty">
+          <div class="mp-empty-ico">🎯</div>
+          <div>Aggiungi selezioni dai <b>Pronostici</b> oppure usa <b>✨ Suggerisci AI</b></div>
+        </div>
+      </div>
+      <div id="mpFooterWrap" style="display:none">
+        <div class="mp-footer">
+          <div class="mp-total">
+            <div class="mp-tot-item"><div class="mp-tot-lbl">Gambe</div><div class="mp-tot-val purple" id="mp-legs-n">0</div></div>
+            <div class="mp-tot-item"><div class="mp-tot-lbl">Quota Totale</div><div class="mp-tot-val gold" id="mp-total-odds">1.00</div></div>
+            <div class="mp-tot-item"><div class="mp-tot-lbl">Potenziale Vincita</div><div class="mp-tot-val" id="mp-potential">€0</div></div>
+            <div class="mp-stake-wrap"><span class="euro">€</span><input class="mp-stake-inp" id="mpStake" type="number" value="10" min="1" step="0.5" oninput="updateMpCalc()"><span class="mp-stake-lbl">puntata</span></div>
+          </div>
+          <button class="mp-save-btn" onclick="saveParlay()">💾 Salva Multipla</button>
+        </div>
+      </div>
+      <!-- AI SUGGESTIONS -->
+      <div id="aiMultiSuggestWrap" style="display:none" class="ai-multi-wrap">
+        <div class="ai-multi-lbl">✨ Multipli Consigliati dall'AI</div>
+        <div class="ai-multi-cards" id="aiMultiCards"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PICK FROM PREDICTIONS -->
+  <div style="margin-bottom:.8rem;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:.8rem;color:var(--muted)">Seleziona partite dai pronostici generati per aggiungerle al multipla:</div>
+    <button class="gbtn" style="font-size:.78rem;padding:7px 16px" onclick="showPage('pronostici',document.querySelectorAll('.nbtn')[0]);setTimeout(()=>document.querySelectorAll('.nbtn')[0].click(),10)">← Vai ai Pronostici</button>
+  </div>
+  <div class="pgrid" id="mpPickGrid">
+    <div class="empty"><div class="eico">⚽</div><div class="etit">Genera prima i pronostici</div><div>Torna alla pagina Pronostici e clicca "Genera Pronostici AI"</div></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════ PAGE: TRACKER ═══════════ -->
+<div class="page" id="page-tracker">
+<div class="wrap">
+  <div class="tracker-header">
+    <div class="thtit">Le Mie <span>Scommesse</span></div>
+    <div class="th-actions">
+      <button class="add-manual-btn" onclick="openAddBet(null)">➕ Singola</button>
+      <button class="add-multi-manual-btn" onclick="openParlayModal(null)">🎯 Multipla</button>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-top">
+      <div class="chart-title">📈 Andamento Profitto/Perdita</div>
+      <div class="ctogs">
+        <button class="ctog on" onclick="setChartMode('balance',this)">Saldo</button>
+        <button class="ctog" onclick="setChartMode('roi',this)">ROI%</button>
+        <button class="ctog" onclick="setChartMode('odds',this)">Quote</button>
+      </div>
+    </div>
+    <div class="chart-canvas-wrap"><canvas id="betChart"></canvas></div>
+  </div>
+
+  <div class="tstat-row">
+    <div class="tsc" style="--ac:var(--text)"><div class="tsc-lbl">Totale</div><div class="tsc-val" id="ts-total">0</div><div class="tsc-sub">scommesse</div></div>
+    <div class="tsc" style="--ac:var(--green)"><div class="tsc-lbl">Vinte</div><div class="tsc-val" id="ts-won">0</div><div class="tsc-sub" id="ts-wr">0% win rate</div></div>
+    <div class="tsc" style="--ac:var(--red)"><div class="tsc-lbl">Perse</div><div class="tsc-val" id="ts-lost">0</div></div>
+    <div class="tsc" style="--ac:var(--cyan)"><div class="tsc-lbl">Saldo</div><div class="tsc-val" id="ts-bal">€0</div><div class="tsc-sub" id="ts-roi">ROI 0%</div></div>
+    <div class="tsc" style="--ac:var(--gold)"><div class="tsc-lbl">Puntata Media</div><div class="tsc-val" id="ts-avg-stake">€0</div></div>
+  </div>
+
+  <div class="dist-row" id="distRow"></div>
+
+  <!-- BET TYPE TABS -->
+  <div class="bet-tabs">
+    <button class="btab on" onclick="setBetView('all',this)">Tutte</button>
+    <button class="btab" onclick="setBetView('single',this)">Singole</button>
+    <button class="btab" onclick="setBetView('parlay',this)">Multipli 🎯</button>
+  </div>
+
+  <div class="bet-table-wrap">
+    <div class="bth">
+      <div class="bth-title" id="bthTitle">Storico</div>
+      <div class="bfils">
+        <button class="bfil on" onclick="setBetFilter('all',this)">Tutte</button>
+        <button class="bfil" onclick="setBetFilter('W',this)">Vinte</button>
+        <button class="bfil" onclick="setBetFilter('L',this)">Perse</button>
+        <button class="bfil" onclick="setBetFilter('P',this)">Attesa</button>
+      </div>
+    </div>
+    <div id="betTableWrap"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ MODAL: SINGOLA BET ═══ -->
+<div class="moverlay" id="betModal" onclick="closeIfOutside(event,'betModal')">
+  <div class="modal">
+    <div class="mh"><div class="mh-title cyan" id="betModalTitle">Aggiungi Scommessa</div><button class="mx" onclick="closeModal('betModal')">✕</button></div>
+    <div class="mb">
+      <div class="fr"><div class="fg ff"><label class="fl-lbl">Partita</label><input class="fi" id="f-match" placeholder="es. Inter vs Milan"></div></div>
+      <div class="fr">
+        <div class="fg"><label class="fl-lbl">Campionato</label><input class="fi" id="f-league" placeholder="Serie A"></div>
+        <div class="fg"><label class="fl-lbl">Sport</label><select class="fs" id="f-sport"><option value="calcio">⚽ Calcio</option><option value="basket">🏀 Basket</option></select></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl-lbl">Tipo Scommessa</label>
+          <select class="fs" id="f-type" onchange="updateTypeHint()">
+            <option value="1X2">1X2 — Risultato</option><option value="Goal/NoGoal">Goal / No Goal</option>
+            <option value="Over/Under">Over / Under</option><option value="MultiGoal">MultiGoal</option>
+            <option value="Handicap">Handicap</option><option value="BTTS">BTTS</option>
+            <option value="Combo">Combo</option><option value="Altro">Altro</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl-lbl" id="f-sel-lbl">Selezione</label><input class="fi" id="f-selection" placeholder="es. 1, Over 2.5..."></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl-lbl">Quota</label><input class="fi" id="f-odds" type="number" step="0.01" min="1" placeholder="1.85"></div>
+        <div class="fg"><label class="fl-lbl">Puntata €</label><input class="fi" id="f-stake" type="number" step="0.5" min="0" placeholder="10"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl-lbl">Data</label><input class="fi" id="f-date" type="date"></div>
+        <div class="fg"><label class="fl-lbl">Esito</label><select class="fs" id="f-result"><option value="P">⏳ Attesa</option><option value="W">✅ Vinta</option><option value="L">❌ Persa</option></select></div>
+      </div>
+      <div class="fr"><div class="fg ff"><label class="fl-lbl">Note</label><input class="fi" id="f-notes" placeholder="Note opzionali"></div></div>
+      <div class="mfoot">
+        <button class="mcancel" onclick="closeModal('betModal')">Annulla</button>
+        <button class="msave green" onclick="saveBet()">💾 Salva</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: MULTIPLA MANUAL ═══ -->
+<div class="moverlay" id="parlayModal" onclick="closeIfOutside(event,'parlayModal')">
+  <div class="modal wide">
+    <div class="mh"><div class="mh-title purple" id="parlayModalTitle">Aggiungi Multipla</div><button class="mx" onclick="closeModal('parlayModal')">✕</button></div>
+    <div class="mb">
+      <div id="parlayLegsContainer"></div>
+      <button class="add-leg-btn" onclick="addParlayLegField()">➕ Aggiungi Selezione</button>
+      <div class="parlay-summary">
+        <div class="ps-item"><div class="ps-lbl">Selezioni</div><div class="ps-val purple" id="ps-count">0</div></div>
+        <div class="ps-item"><div class="ps-lbl">Quota Tot.</div><div class="ps-val gold" id="ps-odds">1.00</div></div>
+        <div class="ps-item"><div class="ps-lbl">Potenz.</div><div class="ps-val" id="ps-win">€0</div></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl-lbl">Puntata €</label><input class="fi" id="p-stake" type="number" step="0.5" min="0" placeholder="10" oninput="updateParlayCalc()"></div>
+        <div class="fg"><label class="fl-lbl">Data</label><input class="fi" id="p-date" type="date"></div>
+      </div>
+      <div class="fr"><div class="fg"><label class="fl-lbl">Esito Multipla</label><select class="fs" id="p-result"><option value="P">⏳ Attesa</option><option value="W">✅ Vinta</option><option value="L">❌ Persa</option></select></div><div class="fg"><label class="fl-lbl">Note</label><input class="fi" id="p-notes" placeholder="Note opzionali"></div></div>
+      <div class="mfoot">
+        <button class="mcancel" onclick="closeModal('parlayModal')">Annulla</button>
+        <button class="msave purple" onclick="saveParlayFromModal()">🎯 Salva Multipla</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: DETAIL ═══ -->
+<div class="moverlay" id="detailModal" onclick="closeIfOutside(event,'detailModal')">
+  <div class="modal"><div class="mh"><div class="mh-title cyan" id="dtitle">Analisi</div><button class="mx" onclick="closeModal('detailModal')">✕</button></div><div class="mb" id="dbody"></div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer><strong>⚠️ GIOCO RESPONSABILE</strong> — BetGenius AI è esclusivamente uno strumento informativo basato su AI e statistiche.<br>Non garantiamo vincite. Il gioco d'azzardo può creare dipendenza. Vietato ai minori di 18 anni.</footer>
+
+<script>
+/* ══════════ CONFIG — BACKEND URL ══════════ */
+// 🔧 Dopo il deploy su Render, aggiorna questo URL
+const BACKEND_URL = (()=>{
+  // legge da meta tag se presente (per deploy su Netlify con variabili)
+  const meta = document.querySelector('meta[name="betgenius-backend"]');
+  if(meta) return meta.content;
+  return "https://betgenius-backend.onrender.com";
+})();
+
+/* ══════════ NEWS ══════════ */
+let NEWS=[{s:"⚽",t:"Caricamento partite in corso..."},{s:"🏀",t:"Recupero dati live..."}];
+
+/* ══════════ LEAGUE FLAGS ══════════ */
+
+/* ══════════ STATE ══════════ */
+let curSport='all', curLeague='all', curDay='all', curBetFilter='all', curBetView='all';
+let preds=[], generating=false;
+let bets=(()=>{try{return JSON.parse(localStorage.getItem('bg_bets2')||'[]');}catch(e){return [];}})();
+let editingBetId=null, chartMode='balance';
+let basket=[];
+let parlayLegsCount=0;
+
+/* ══════════ INIT ══════════ */
+function init(){
+  buildTicker(); setToday(); addDemoIfEmpty(); renderTracker();
+  // Carica notizie dal backend
+  fetch(BACKEND_URL+'/api/news')
+    .then(r=>r.json())
+    .then(d=>{ if(d.news?.length){NEWS=[...d.news,...d.news]; buildTicker();} })
+    .catch(()=>{});
+}
+
+function buildTicker(){
+  const t=document.getElementById('tickerTrack');
+  const all=[...NEWS,...NEWS];
+  t.innerHTML=all.map(n=>`<span class="ti"><span class="tl">${n.s} NEWS</span>${n.t} &nbsp;•</span>`).join('');
+}
+
+function buildLeagues(matches){
+  const set=new Set((matches||[]).map(m=>m.league));
+  document.getElementById('lchips').innerHTML=
+    `<button class="lc on" onclick="setLeague('all',this)">Tutti</button>`+
+    [...set].map(l=>`<button class="lc" onclick="setLeague('${l}',this)">${l}</button>`).join('');
+}
+
+function setToday(){
+  const d=new Date().toISOString().split('T')[0];
+  ['f-date','p-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=d;});
+}
+
+/* ══════════ PAGE NAV ══════════ */
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='tracker') renderTracker();
+  if(id==='multipla') renderMpPickGrid();
+}
+
+/* ══════════ FILTERS ══════════ */
+function setSport(s,el){curSport=s;document.querySelectorAll('.st').forEach(b=>b.classList.remove('on'));el.classList.add('on');filterPreds();}
+function setDay(d,el){curDay=d;document.querySelectorAll('#day-all,#day-oggi,#day-domani,#day-dopo').forEach(b=>b.classList.remove('on'));el.classList.add('on');filterPreds();}
+function setLeague(l,el){curLeague=l;document.querySelectorAll('.lc').forEach(c=>c.classList.remove('on'));el.classList.add('on');filterPreds();}
+function filterPreds(){
+  const q=document.getElementById('searchInp').value.toLowerCase();
+  const mo=document.getElementById('oddsF').value;
+  const mt=document.getElementById('typeF').value;
+  let vis=0;
+  document.querySelectorAll('.pc').forEach(c=>{
+    const sp=c.dataset.sport,lg=c.dataset.league,txt=c.textContent.toLowerCase();
+    const od=parseFloat(c.dataset.odds),tp=c.dataset.type||'';
+    const dy=c.dataset.day||'';
+    let ok=true;
+    if(curSport!=='all'&&sp!==curSport)ok=false;
+    if(curDay!=='all'&&dy!==curDay)ok=false;
+    if(curLeague!=='all'&&lg!==curLeague)ok=false;
+    if(q&&!txt.includes(q))ok=false;
+    if(mo!=='all'&&od>parseFloat(mo))ok=false;
+    if(mt!=='all'&&tp!==mt)ok=false;
+    c.style.display=ok?'':'none';
+    if(ok)vis++;
+  });
+  const ep=document.getElementById('emptyPreds');
+  if(ep)ep.style.display=(vis===0&&preds.length>0)?'block':'none';
+}
+
+/* ══════════ GENERATE — chiama il backend ══════════ */
+async function generateAll(){
+  if(generating)return;
+  generating=true; preds=[];
+  const btn=document.getElementById('genBtn'),ico=document.getElementById('genIco');
+  btn.disabled=true; ico.textContent='⟳'; ico.classList.add('spin');
+  const grid=document.getElementById('pgrid');
+
+  grid.innerHTML=`<div class="empty" style="grid-column:1/-1">
+    <div class="eico" style="display:inline-block">⚙️</div>
+    <div class="etit" style="opacity:.7">Recupero partite dal server...</div>
+    <div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">
+      Scraping ESPN · Analisi AI · Potrebbe richiedere 20–40 secondi al primo avvio
+    </div>
+  </div>`;
+
+  try{
+    const res = await fetch(BACKEND_URL+'/api/matches', {signal: AbortSignal.timeout(90000)});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const matches = data.matches || [];
+
+    if(!matches.length){
+      grid.innerHTML=`<div class="empty" style="grid-column:1/-1">
+        <div class="eico">⚠️</div>
+        <div class="etit" style="opacity:.6">Nessuna partita trovata</div>
+        <div style="font-size:.8rem;color:var(--muted)">Il backend non ha trovato partite per oggi/domani. Riprova più tardi.</div>
+      </div>`;
+      btn.disabled=false; ico.textContent='⚡'; ico.classList.remove('spin');
+      generating=false; return;
+    }
+
+    // Aggiorna lastUpdated
+    const updEl=document.getElementById('lastUpdated');
+    if(updEl && data.updated_at){
+      const d=new Date(data.updated_at);
+      updEl.style.display='block'; updEl.textContent=`Aggiornato: ${d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}`;
+    }
+
+    // Aggiorna news con le partite
+    NEWS = matches.map(m=>({
+      s: m.sport==='calcio'?'⚽':'🏀',
+      t: `${m.home} vs ${m.away} — ${m.league} | ${m.date} ${m.time}`
+    }));
+    buildTicker();
+
+    // Costruisce league filter
+    buildLeagues(matches);
+
+    // Renderizza cards — ogni partita ha predictions.main / .cards / .corners1h / .corners
+    grid.innerHTML='';
+    for(let i=0;i<matches.length;i++){
+      const m=matches[i];
+      // Supporta sia il vecchio "prediction" sia il nuovo "predictions"
+      const allPreds = m.predictions || (m.prediction ? {main: m.prediction, cards: null, corners1h: null, corners: null} : {});
+      const r = allPreds.main || {};
+
+      const match={
+        id:        m.id || i+1,
+        home:      m.home,  away: m.away,
+        league:    m.league, flag: m.flag || leagueFlag(m.league),
+        sport:     m.sport,  time: m.time, date: m.date,
+        homeForm:  m.homeForm || [], awayForm: m.awayForm || [],
+        stats:     m.stats || {}, winProb: m.winProb || {},
+      };
+      const pred={
+        prediction: r.prediction || `Vittoria ${m.home}`,
+        betType:    r.betType    || '1X2',
+        odds:       parseFloat(r.odds || 1.8),
+        confidence: parseInt(r.confidence || 65),
+        analysis:   r.analysis   || '',
+        keyFactors: r.keyFactors || ['Forma recente','Statistiche','H2H'],
+        risk:       r.risk       || 'Medio',
+        // mercati extra
+        cards:      allPreds.cards     || null,
+        corners1h:  allPreds.corners1h || null,
+        corners:    allPreds.corners   || null,
+      };
+      const card=document.createElement('div');
+      card.className='pc';
+      card.dataset.sport=match.sport;
+      card.dataset.league=match.league;
+      card.dataset.odds=pred.odds;
+      card.dataset.type=pred.betType;
+      card.dataset.mid=match.id;
+      card.dataset.day=match.date||'';
+      grid.appendChild(card);
+      fillCard(card, match, pred);
+      preds.push({m:match, r:pred});
+      await sleep(30);
+    }
+    updatePredStats();
+    filterPreds();
+    renderMpPickGrid();
+
+  }catch(err){
+    console.error('Backend error:', err);
+    const isTimeout = err.name === 'TimeoutError' || err.name === 'AbortError';
+    grid.innerHTML=`<div class="empty" style="grid-column:1/-1">
+      <div class="eico">🔌</div>
+      <div class="etit" style="opacity:.6">${isTimeout?'Timeout':'Errore connessione'}</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-top:.5rem;max-width:400px;margin-inline:auto">
+        ${isTimeout
+          ? 'Il backend è in avvio (Render free si spegne dopo inattività). Riprova tra 30 secondi.'
+          : 'Impossibile contattare il backend. Controlla che <code>BACKEND_URL</code> sia corretto.'
+        }
+        <br><br>
+        <button onclick="generateAll()" style="background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.3);border-radius:8px;padding:7px 18px;color:var(--cyan);cursor:pointer;font-size:.82rem;font-family:inherit">
+          ↻ Riprova
+        </button>
+      </div>
+    </div>`;
+  }
+
+  btn.disabled=false; ico.textContent='⚡'; ico.classList.remove('spin');
+  generating=false;
+}
+
+function fallback(m){
+  const types=['1X2','Over/Under','Goal/NoGoal','BTTS','MultiGoal'];
+  const t=types[Math.floor(Math.random()*types.length)];
+  return{prediction:m.sport==='calcio'?`Vittoria ${m.home}`:`Over ${(m.stats?.totAvg||220).toFixed(0)} punti`,betType:t,odds:parseFloat((1.5+Math.random()*2).toFixed(2)),confidence:Math.floor(58+Math.random()*22),analysis:`${m.home} mostra buona forma recente. Statistiche favorevoli supportano questa selezione.`,keyFactors:['Forma recente','Fattore campo','H2H'],risk:'Medio'};
+}
+
+function makeSkeletonCard(m){
+  const c=document.createElement('div');
+  c.className='pc';c.dataset.sport=m.sport;c.dataset.league=m.league;c.dataset.odds='0';c.dataset.mid=m.id;
+  c.innerHTML=`<div class="in-basket-dot"></div><div class="ch"><div class="ltag"><span>${m.flag}</span>${m.league}</div><div class="cbadge ch-m">…</div></div><div class="ct"><div class="mtime">${m.date?`📅 ${m.date} ${m.time}`:`📅 ${m.time}`}</div><div class="mu"><div class="team"><div class="tnm">${m.home}</div></div><div class="vsbdg">VS</div><div class="team"><div class="tnm">${m.away}</div></div></div><div class="pbox"><div class="plbl">Analisi AI…</div><div class="ald"><span>Elaborazione</span><div class="tdots"><span></span><span></span><span></span></div></div></div></div>`;
+  return c;
+}
+
+function fillCard(card,m,r){
+  card.dataset.odds=r.odds; card.dataset.type=r.betType;
+  const cc=r.confidence>=75?'ch-h':r.confidence>=60?'ch-m':'ch-l';
+  const isCal=m.sport==='calcio';
+  const fH=isCal?`<div class="tform">${(m.homeForm||[]).map(f=>`<div class="fd f${f.toLowerCase()}"></div>`).join('')}</div>`:'';
+  const fA=isCal?`<div class="tform">${(m.awayForm||[]).map(f=>`<div class="fd f${f.toLowerCase()}"></div>`).join('')}</div>`:'';
+  const inBasket=basket.some(x=>x.matchId===m.id);
+  if(inBasket) card.classList.add('in-basket');
+
+  // Costruisce i tab dei mercati extra (solo calcio)
+  const extraMarkets=[];
+  if(r.cards)     extraMarkets.push({key:'cards',    icon:'🟨', label:'Cartellini', data:r.cards});
+  if(r.corners1h) extraMarkets.push({key:'corn1h',   icon:'⛳', label:'Angoli 1°T', data:r.corners1h});
+  if(r.corners)   extraMarkets.push({key:'corners',  icon:'🚩', label:'Angoli Tot', data:r.corners});
+
+  const mkTabBtns = extraMarkets.map((mk,i)=>
+    `<button class="mk-tab" data-mk="${mk.key}" onclick="switchMkTab(this,${m.id},'${mk.key}')">${mk.icon} ${mk.label}</button>`
+  ).join('');
+
+  const mkPanels = extraMarkets.map(mk=>{
+    const d=mk.data;
+    const mc=d.confidence>=75?'ch-h':d.confidence>=60?'ch-m':'ch-l';
+    return `<div class="mk-panel" id="mkp-${m.id}-${mk.key}" style="display:none">
+      <div class="pbox" style="margin-bottom:.5rem">
+        <div class="plbl">${mk.icon} ${mk.label}</div>
+        <div class="pval">${d.prediction}</div>
+        <div class="podds">
+          <div class="ob">@${parseFloat(d.odds).toFixed(2)}</div>
+          <div class="cbadge ${mc}" style="font-size:.62rem">${d.confidence}%</div>
+        </div>
+      </div>
+      <div class="ks">${(d.keyFactors||[]).map(f=>`<span class="kp">${f}</span>`).join('')}<span class="kp">Rischio: <strong>${d.risk}</strong></span></div>
+      <div class="ca"><div class="at">${d.analysis||''}</div></div>
+      <button class="ca-btn ca-btn-add" style="margin:.2rem .8rem .6rem;flex:none;width:calc(100% - 1.6rem)" onclick="openAddBetFromCardMarket(event,${m.id},'${mk.key}')">➕ Aggiungi al Tracker</button>
+    </div>`;
+  }).join('');
+
+  card.innerHTML=`
+    <div class="in-basket-dot"></div>
+    <div class="ch"><div class="ltag"><span>${m.flag}</span>${m.league}</div><div class="cbadge ${cc}">${r.confidence}% 🎯</div></div>
+    <div class="ct">
+      <div class="mtime">${m.date?`📅 ${m.date} ${m.time}`:`📅 ${m.time}`}</div>
+      <div class="mu">
+        <div class="team"><div class="tnm">${m.home}</div>${fH}</div>
+        <div class="vsbdg">VS</div>
+        <div class="team"><div class="tnm">${m.away}</div>${fA}</div>
+      </div>
+    </div>
+    ${extraMarkets.length?`<div class="mk-tabs"><button class="mk-tab on" data-mk="main" onclick="switchMkTab(this,${m.id},'main')">⚽ Principale</button>${mkTabBtns}</div>`:''}
+    <div class="mk-panel" id="mkp-${m.id}-main">
+      <div class="ct" style="padding-top:0">
+        <div class="pbox"><div class="plbl">🤖 Pronostico AI</div><div class="pval">${r.prediction}</div>
+          <div class="podds"><div class="ob">@${parseFloat(r.odds).toFixed(2)}</div><div class="btlbl">${r.betType}</div></div>
+        </div>
+      </div>
+      <div class="ks">${(r.keyFactors||[]).map(f=>`<span class="kp">${f}</span>`).join('')}<span class="kp">Rischio: <strong>${r.risk}</strong></span></div>
+      <div class="ca"><div class="at">${r.analysis||''}</div></div>
+      <div class="card-actions">
+        <button class="ca-btn ca-btn-add" onclick="openAddBetFromCard(event,${m.id})">➕ Singola</button>
+        <button class="ca-btn ca-btn-multi" id="basket-btn-${m.id}" onclick="toggleBasket(event,${m.id})">${inBasket?'✓ Nel Multipla':'🎯 + Multipla'}</button>
+      </div>
+    </div>
+    ${mkPanels}`;
+
+  // click sull'header → apre dettaglio
+  card.querySelector('.ch').addEventListener('click',()=>openDetail(m,r));
+}
+
+function switchMkTab(btn, matchId, key){
+  const card=document.querySelector(`.pc[data-mid="${matchId}"]`);
+  if(!card) return;
+  card.querySelectorAll('.mk-tab').forEach(b=>b.classList.remove('on'));
+  card.querySelectorAll('.mk-panel').forEach(p=>p.style.display='none');
+  btn.classList.add('on');
+  const panel=document.getElementById(`mkp-${matchId}-${key}`);
+  if(panel) panel.style.display='block';
+}
+
+function openAddBetFromCardMarket(evt, matchId, marketKey){
+  evt.stopPropagation();
+  const pd=preds.find(p=>p.m.id===matchId);
+  if(!pd) return;
+  const m=pd.m, r=pd.r;
+  const mkData = marketKey==='cards'?r.cards : marketKey==='corn1h'?r.corners1h : marketKey==='corners'?r.corners : null;
+  if(!mkData) return;
+  editingBetId=null;
+  document.getElementById('betModalTitle').textContent='Aggiungi Scommessa';
+  document.getElementById('f-match').value=`${m.home} vs ${m.away}`;
+  document.getElementById('f-league').value=m.league;
+  document.getElementById('f-sport').value='calcio';
+  document.getElementById('f-type').value=mkData.betType||'Altro';
+  document.getElementById('f-selection').value=mkData.prediction||'';
+  document.getElementById('f-odds').value=parseFloat(mkData.odds).toFixed(2);
+  document.getElementById('f-notes').value=`AI ${mkData.confidence}% conf, rischio ${mkData.risk}`;
+  setToday(); openModal('betModal');
+}
+
+function updatePredStats(){
+  document.getElementById('s-total').textContent=preds.length;
+  document.getElementById('s-high').textContent=preds.filter(p=>p.r.confidence>=75).length;
+  const odds=preds.map(p=>parseFloat(p.r.odds));
+  document.getElementById('s-avg').textContent=odds.length?(odds.reduce((a,b)=>a+b,0)/odds.length).toFixed(2):'—';
+  // sport breakdown
+  document.getElementById('s-calcio').textContent=preds.filter(p=>p.m.sport==='calcio').length;
+  document.getElementById('s-basket-count').textContent=preds.filter(p=>p.m.sport==='basket').length;
+  document.getElementById('s-tennis').textContent=preds.filter(p=>p.m.sport==='tennis').length;
+  // day breakdown
+  const oggi=preds.filter(p=>p.m.date==='Oggi').length;
+  const dom=preds.filter(p=>p.m.date==='Domani').length;
+  const dopo=preds.filter(p=>p.m.date==='Dopodomani').length;
+  const sub=document.getElementById('s-oggi-sub');
+  if(sub) sub.textContent=`oggi ${oggi} · dom ${dom} · dopo ${dopo}`;
+}
+
+/* ══════════ BASKET (multipla builder) ══════════ */
+function toggleBasket(evt,matchId){
+  evt.stopPropagation();
+  const idx=basket.findIndex(x=>x.matchId===matchId);
+  if(idx>=0){
+    basket.splice(idx,1);
+    showToast('Rimosso dal multipla');
+  } else {
+    const pd=preds.find(p=>p.m.id===matchId);
+    if(!pd){showToast('Genera prima i pronostici','err');return;}
+    if(basket.length>=8){showToast('Max 8 selezioni per multipla','err');return;}
+    basket.push({matchId,pred:pd.r,match:pd.m});
+    showToast('✓ Aggiunto al multipla');
+  }
+  // update card visuals
+  const card=document.querySelector(`.pc[data-mid="${matchId}"]`);
+  if(card){
+    const inB=basket.some(x=>x.matchId===matchId);
+    card.classList.toggle('in-basket',inB);
+    const btn=card.querySelector('.ca-btn-multi');
+    if(btn)btn.textContent=inB?'✓ Nel Multipla':'🎯 + Multipla';
+  }
+  updatePredStats();
+  renderMpPanel();
+}
+
+function clearBasket(){
+  basket=[];
+  // reset all cards
+  document.querySelectorAll('.pc').forEach(c=>{
+    c.classList.remove('in-basket');
+    const btn=c.querySelector('.ca-btn-multi');
+    if(btn)btn.textContent='🎯 + Multipla';
+  });
+  updatePredStats();
+  renderMpPanel();
+  showToast('Multipla svuotata');
+}
+
+function renderMpPanel(){
+  const wrap=document.getElementById('mpLegsWrap');
+  const footer=document.getElementById('mpFooterWrap');
+  const badge=document.getElementById('mp-count-badge');
+  badge.textContent=`${basket.length} gamb${basket.length===1?'a':'e'}`;
+  if(!basket.length){
+    wrap.innerHTML=`<div class="mp-empty" id="mpEmpty"><div class="mp-empty-ico">🎯</div><div>Aggiungi selezioni dai <b>Pronostici</b> oppure usa <b>✨ Suggerisci AI</b></div></div>`;
+    footer.style.display='none';
+    return;
+  }
+  footer.style.display='block';
+  wrap.innerHTML=`<div class="mp-legs">${basket.map((item,i)=>`
+    <div class="mp-leg">
+      <div class="mp-leg-num">${i+1}</div>
+      <div class="mp-leg-info">
+        <div class="mp-leg-match">${item.match.home} vs ${item.match.away}</div>
+        <div class="mp-leg-sel">${item.pred.prediction} · ${item.pred.betType} · ${item.match.league}</div>
+      </div>
+      <div class="mp-leg-odds">@${parseFloat(item.pred.odds).toFixed(2)}</div>
+      <button class="mp-leg-del" onclick="removeFromBasket(${item.matchId})">✕</button>
+    </div>`).join('')}</div>`;
+  updateMpCalc();
+}
+
+function removeFromBasket(matchId){
+  basket=basket.filter(x=>x.matchId!==matchId);
+  const card=document.querySelector(`.pc[data-mid="${matchId}"]`);
+  if(card){card.classList.remove('in-basket');const btn=card.querySelector('.ca-btn-multi');if(btn)btn.textContent='🎯 + Multipla';}
+  updatePredStats();document.getElementById("s-basket").textContent=basket.length;renderMpPanel();
+}
+
+function updateMpCalc(){
+  const stake=parseFloat(document.getElementById('mpStake').value)||0;
+  const totalOdds=basket.reduce((acc,x)=>acc*parseFloat(x.pred.odds),1);
+  const pot=stake*totalOdds;
+  document.getElementById('mp-legs-n').textContent=basket.length;
+  document.getElementById('mp-total-odds').textContent=`@${totalOdds.toFixed(2)}`;
+  document.getElementById('mp-potential').textContent=`€${pot.toFixed(2)}`;
+}
+
+function saveParlay(){
+  if(basket.length<2){showToast('Aggiungi almeno 2 selezioni','err');return;}
+  const stake=parseFloat(document.getElementById('mpStake').value)||0;
+  if(stake<=0){showToast('Inserisci la puntata','err');return;}
+  const totalOdds=basket.reduce((acc,x)=>acc*parseFloat(x.pred.odds),1);
+  const bet={
+    id:Date.now(),isParlay:true,
+    legs:basket.map(x=>({match:`${x.match.home} vs ${x.match.away}`,league:x.match.league,selection:x.pred.prediction,betType:x.pred.betType,odds:parseFloat(x.pred.odds)})),
+    odds:parseFloat(totalOdds.toFixed(2)),stake,
+    date:new Date().toISOString().split('T')[0],
+    result:'P',profit:0,notes:`Multipla ${basket.length} selezioni AI`
+  };
+  bets.unshift(bet);saveBetsLocal();
+  showToast(`🎯 Multipla ${basket.length} gambe salvata!`,'ok');
+  clearBasket();
+  renderTracker();
+}
+
+/* ══════════ MP PICK GRID ══════════ */
+function renderMpPickGrid(){
+  const grid=document.getElementById('mpPickGrid');
+  if(!preds.length){
+    grid.innerHTML=`<div class="empty"><div class="eico">⚽</div><div class="etit">Genera prima i pronostici</div><div>Torna alla pagina Pronostici e clicca "Genera Pronostici AI"</div></div>`;
+    return;
+  }
+  grid.innerHTML='';
+  preds.forEach(({m,r})=>{
+    const inB=basket.some(x=>x.matchId===m.id);
+    const card=document.createElement('div');
+    card.className='pc'+(inB?' in-basket':'');
+    card.dataset.sport=m.sport;card.dataset.league=m.league;card.dataset.odds=r.odds;card.dataset.mid=m.id;
+    const cc=r.confidence>=75?'ch-h':r.confidence>=60?'ch-m':'ch-l';
+    card.innerHTML=`
+      <div class="in-basket-dot"></div>
+      <div class="ch"><div class="ltag"><span>${m.flag}</span>${m.league}</div><div class="cbadge ${cc}">${r.confidence}%</div></div>
+      <div class="ct">
+        <div class="mtime">${m.home} vs ${m.away}</div>
+        <div class="pbox" style="margin-bottom:0"><div class="plbl">Selezione</div><div class="pval" style="font-size:1.1rem">${r.prediction}</div>
+          <div class="podds"><div class="ob">@${parseFloat(r.odds).toFixed(2)}</div><div class="btlbl">${r.betType}</div></div>
+        </div>
+      </div>
+      <div class="card-actions" style="padding:.5rem .8rem .8rem">
+        <button class="ca-btn ca-btn-multi" style="flex:1" onclick="toggleBasketMp(event,${m.id})">${inB?'✓ Nel Multipla':'🎯 Aggiungi'}</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleBasketMp(evt,matchId){
+  evt.stopPropagation();
+  toggleBasket(evt,matchId);
+  renderMpPickGrid();
+  renderMpPanel();
+}
+
+/* ══════════ AI MULTI SUGGEST ══════════ */
+async function generateAIMulti(){
+  if(!preds.length){showToast('Genera prima i pronostici AI','err');return;}
+  const btn=document.getElementById('aiMultiBtn'),ico=document.getElementById('aiMultiIco');
+  btn.disabled=true;ico.textContent='⟳';
+  const matchList=preds.map(({m,r})=>`• ${m.home} vs ${m.away} (${m.league}): miglior scommessa="${r.prediction}" @${r.odds}, conf=${r.confidence}%`).join('\n');
+  const prompt=`Sei un esperto di scommesse. Hai queste partite analizzate:\n${matchList}\n\nCrea 3 multipli diversi (2-3 gambe ciascuno) ottimizzando il rapporto rischio/rendimento. Quota totale target: 2.5-6.00. Rispondi SOLO JSON:\n{"suggestions":[{"label":"nome multipla","legs":[{"matchId":num,"match":"str","selection":"str","odds":num}],"totalOdds":num,"confidence":int,"rationale":"frase breve"},...]}\nUsa solo matchId numerici corrispondenti alle partite.`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1500,system:"Esperto scommesse. Rispondi SOLO JSON valido senza backtick.",messages:[{role:"user",content:prompt}]})});
+    const data=await res.json();
+    const txt=data.content?.map(b=>b.text||'').join('')||'';
+    let parsed;try{parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());}catch{showToast('Errore parsing AI','err');btn.disabled=false;ico.textContent='✨';return;}
+    renderAiMultiSuggestions(parsed.suggestions||[]);
+  }catch(e){showToast('Errore connessione AI','err');}
+  btn.disabled=false;ico.textContent='✨';
+}
+
+function renderAiMultiSuggestions(suggestions){
+  const wrap=document.getElementById('aiMultiSuggestWrap');
+  const cards=document.getElementById('aiMultiCards');
+  if(!suggestions.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  cards.innerHTML=suggestions.map((s,i)=>`
+    <div class="ai-mc" onclick="loadSuggestion(${i})">
+      <div class="ai-mc-lbl">${s.label||`Multipla ${i+1}`}</div>
+      <div class="ai-mc-sel">${s.legs.map(l=>l.selection).join(' + ')}</div>
+      <div class="ai-mc-odds">@${parseFloat(s.totalOdds).toFixed(2)}</div>
+      <div class="ai-mc-conf">Conf. ${s.confidence}% · ${s.legs.length} gambe</div>
+    </div>`).join('');
+  // store globally
+  window._aiSuggestions=suggestions;
+}
+
+function loadSuggestion(idx){
+  const s=window._aiSuggestions?.[idx];
+  if(!s)return;
+  clearBasket();
+  s.legs.forEach(leg=>{
+    const pd=preds.find(p=>p.m.id===leg.matchId);
+    if(pd){
+      basket.push({matchId:pd.m.id,pred:{...pd.r,prediction:leg.selection,odds:leg.odds},match:pd.m});
+    }
+  });
+  updatePredStats();document.getElementById("s-basket").textContent=basket.length;renderMpPanel();renderMpPickGrid();
+  showToast(`✅ Caricata: ${s.label}`,'ok');
+}
+
+/* ══════════ DETAIL MODAL ══════════ */
+function openDetail(m,r){
+  document.getElementById('dtitle').textContent=`${m.home} vs ${m.away}`;
+  const isCal=m.sport==='calcio';
+  const extra=isCal?`<table class="otable"><tr><th>Statistica</th><th>Valore</th></tr><tr><td>Media gol ${m.home}</td><td class="hl">${m.stats.hG}</td></tr><tr><td>Media gol ${m.away}</td><td class="hl">${m.stats.aG}</td></tr><tr><td>BTTS</td><td class="hl">${m.stats.btts}%</td></tr><tr><td>Over 2.5</td><td class="hl">${m.stats.o25}%</td></tr><tr><td>Over 3.5</td><td class="hl">${m.stats.o35}%</td></tr></table>`:
+    `<table class="otable"><tr><th></th><th>${m.home}</th><th>${m.away}</th></tr><tr><td>Media Punti</td><td class="hl">${m.stats.hPPG}</td><td class="hl">${m.stats.aPPG}</td></tr><tr><td>Tot. medio gara</td><td class="hl" colspan="2">${m.stats.totAvg}</td></tr></table>`;
+  document.getElementById('dbody').innerHTML=`
+    <div class="dm-sec"><div class="dm-stit">Pronostico</div><div style="display:flex;gap:.9rem;align-items:center;flex-wrap:wrap"><div class="ob" style="font-size:1.2rem">@${parseFloat(r.odds).toFixed(2)}</div><div><div style="font-size:.98rem;font-weight:700">${r.prediction}</div><div style="font-size:.74rem;color:var(--muted)">${r.betType} · ${r.confidence}% conf · Rischio ${r.risk}</div></div></div></div>
+    <div class="dm-sec"><div class="dm-stit">Analisi AI</div><div class="dm-text">${r.analysis}</div></div>
+    <div class="dm-sec"><div class="dm-stit">Statistiche</div>${extra}</div>
+    <div style="display:flex;gap:.6rem;margin-top:.5rem">
+      <button class="msave green" style="flex:1;padding:9px;border-radius:9px;border:none;cursor:pointer;font-size:.83rem;font-weight:700;font-family:var(--font-body);color:#000" onclick="openAddBetFromCard(null,${m.id});closeModal('detailModal')">➕ Singola</button>
+      <button class="msave purple" style="flex:1;padding:9px;border-radius:9px;border:none;cursor:pointer;font-size:.83rem;font-weight:700;font-family:var(--font-body)" onclick="toggleBasket({stopPropagation:()=>{}},${m.id});closeModal('detailModal')">🎯 + Multipla</button>
+    </div>`;
+  openModal('detailModal');
+}
+
+/* ══════════ SINGLE BET MODAL ══════════ */
+function openAddBetFromCard(evt,matchId){
+  if(evt)evt.stopPropagation();
+  editingBetId=null;
+  document.getElementById('betModalTitle').textContent='Aggiungi Scommessa';
+  clearBetForm();
+  const pd=preds.find(p=>p.m.id===matchId);
+  if(pd){
+    document.getElementById('f-match').value=`${pd.m.home} vs ${pd.m.away}`;
+    document.getElementById('f-league').value=pd.m.league;
+    document.getElementById('f-sport').value=pd.m.sport||'calcio';
+    document.getElementById('f-type').value=pd.r.betType||'1X2';
+    document.getElementById('f-selection').value=pd.r.prediction||'';
+    document.getElementById('f-odds').value=parseFloat(pd.r.odds).toFixed(2);
+    document.getElementById('f-notes').value=`AI ${pd.r.confidence}% conf, rischio ${pd.r.risk}`;
+  }
+  setToday();openModal('betModal');
+}
+
+function openAddBet(e){
+  if(e)e.stopPropagation();
+  editingBetId=null;
+  document.getElementById('betModalTitle').textContent='Aggiungi Scommessa';
+  clearBetForm();setToday();openModal('betModal');
+}
+
+function openEditBet(id){
+  const b=bets.find(x=>x.id===id);if(!b||b.isParlay)return;
+  editingBetId=id;
+  document.getElementById('betModalTitle').textContent='Modifica Scommessa';
+  document.getElementById('f-match').value=b.match||'';
+  document.getElementById('f-league').value=b.league||'';
+  document.getElementById('f-sport').value=b.sport||'calcio';
+  document.getElementById('f-type').value=b.type||'1X2';
+  document.getElementById('f-selection').value=b.selection||'';
+  document.getElementById('f-odds').value=b.odds||'';
+  document.getElementById('f-stake').value=b.stake||'';
+  document.getElementById('f-date').value=b.date||'';
+  document.getElementById('f-result').value=b.result||'P';
+  document.getElementById('f-notes').value=b.notes||'';
+  openModal('betModal');
+}
+
+function clearBetForm(){['f-match','f-league','f-selection','f-odds','f-stake','f-notes'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-type').value='1X2';document.getElementById('f-result').value='P';document.getElementById('f-sport').value='calcio';}
+
+function updateTypeHint(){
+  const map={'1X2':'es. 1, X, 2','Goal/NoGoal':'es. Goal, No Goal','Over/Under':'es. Over 2.5, Under 1.5','MultiGoal':'es. 2-3 gol, 1-3 gol','Handicap':'es. Home -1.5','BTTS':'es. Sì, No','Combo':'Combinazione','Altro':'Descrizione libera'};
+  document.getElementById('f-selection').placeholder=map[document.getElementById('f-type').value]||'Selezione';
+}
+
+function saveBet(){
+  const match=document.getElementById('f-match').value.trim();
+  const odds=parseFloat(document.getElementById('f-odds').value);
+  const stake=parseFloat(document.getElementById('f-stake').value);
+  if(!match){showToast('⚠️ Inserisci la partita','err');return;}
+  if(isNaN(odds)||odds<1){showToast('⚠️ Quota non valida','err');return;}
+  if(isNaN(stake)||stake<=0){showToast('⚠️ Inserisci la puntata','err');return;}
+  const result=document.getElementById('f-result').value;
+  const profit=result==='W'?parseFloat(((odds-1)*stake).toFixed(2)):result==='L'?-stake:0;
+  const bet={id:editingBetId||Date.now(),isParlay:false,match,league:document.getElementById('f-league').value.trim(),sport:document.getElementById('f-sport').value,type:document.getElementById('f-type').value,selection:document.getElementById('f-selection').value.trim(),odds,stake,date:document.getElementById('f-date').value,result,profit,notes:document.getElementById('f-notes').value.trim()};
+  if(editingBetId){const idx=bets.findIndex(b=>b.id===editingBetId);if(idx>=0)bets[idx]=bet;}else{bets.unshift(bet);}
+  saveBetsLocal();closeModal('betModal');renderTracker();showToast(editingBetId?'✅ Aggiornata':'✅ Scommessa salvata','ok');editingBetId=null;
+}
+
+function deleteBet(id){
+  if(!confirm('Eliminare?'))return;
+  bets=bets.filter(b=>b.id!==id);saveBetsLocal();renderTracker();showToast('🗑️ Eliminata');
+}
+
+/* ══════════ PARLAY MODAL (manual) ══════════ */
+let parlayLegs=[];
+
+function openParlayModal(e){
+  if(e)e.stopPropagation();
+  parlayLegs=[{match:'',league:'',selection:'',betType:'1X2',odds:''}];
+  document.getElementById('parlayModalTitle').textContent='Aggiungi Multipla';
+  setToday();document.getElementById('p-result').value='P';document.getElementById('p-notes').value='';
+  document.getElementById('p-stake').value='10';
+  renderParlayLegsForm();openModal('parlayModal');
+}
+
+function renderParlayLegsForm(){
+  const c=document.getElementById('parlayLegsContainer');
+  c.innerHTML=parlayLegs.map((leg,i)=>`
+    <div class="parlay-leg-form">
+      <div class="plf-header"><div class="plf-num">Selezione ${i+1}</div>${parlayLegs.length>2?`<button class="plf-del" onclick="removeParlayLeg(${i})">✕</button>`:''}</div>
+      <div class="fr">
+        <div class="fg ff"><label class="fl-lbl">Partita</label><input class="fi" placeholder="es. Inter vs Milan" value="${leg.match}" oninput="parlayLegs[${i}].match=this.value"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl-lbl">Tipo</label>
+          <select class="fs" onchange="parlayLegs[${i}].betType=this.value">
+            ${['1X2','Goal/NoGoal','Over/Under','MultiGoal','Handicap','BTTS','Altro'].map(t=>`<option${leg.betType===t?' selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+        <div class="fg"><label class="fl-lbl">Selezione</label><input class="fi" placeholder="es. 1, Over 2.5" value="${leg.selection}" oninput="parlayLegs[${i}].selection=this.value"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl-lbl">Quota</label><input class="fi" type="number" step="0.01" min="1" placeholder="1.75" value="${leg.odds}" oninput="parlayLegs[${i}].odds=this.value;updateParlayCalc()"></div>
+        <div class="fg"><label class="fl-lbl">Campionato</label><input class="fi" placeholder="Serie A" value="${leg.league}" oninput="parlayLegs[${i}].league=this.value"></div>
+      </div>
+    </div>`).join('');
+  updateParlayCalc();
+}
+
+function addParlayLegField(){if(parlayLegs.length>=8){showToast('Max 8 selezioni','err');return;}parlayLegs.push({match:'',league:'',selection:'',betType:'1X2',odds:''});renderParlayLegsForm();}
+function removeParlayLeg(i){if(parlayLegs.length<=2)return;parlayLegs.splice(i,1);renderParlayLegsForm();}
+
+function updateParlayCalc(){
+  const odds=parlayLegs.map(l=>parseFloat(l.odds)||1);
+  const total=odds.reduce((a,b)=>a*b,1);
+  const stake=parseFloat(document.getElementById('p-stake').value)||0;
+  document.getElementById('ps-count').textContent=parlayLegs.length;
+  document.getElementById('ps-odds').textContent=`@${total.toFixed(2)}`;
+  document.getElementById('ps-win').textContent=`€${(stake*total).toFixed(2)}`;
+}
+
+function saveParlayFromModal(){
+  const stake=parseFloat(document.getElementById('p-stake').value);
+  if(isNaN(stake)||stake<=0){showToast('Inserisci la puntata','err');return;}
+  const valid=parlayLegs.filter(l=>l.match.trim()&&parseFloat(l.odds)>=1);
+  if(valid.length<2){showToast('Inserisci almeno 2 selezioni valide con quota','err');return;}
+  const totalOdds=valid.reduce((a,l)=>a*parseFloat(l.odds),1);
+  const result=document.getElementById('p-result').value;
+  const profit=result==='W'?parseFloat(((totalOdds-1)*stake).toFixed(2)):result==='L'?-stake:0;
+  const bet={id:Date.now(),isParlay:true,legs:valid.map(l=>({match:l.match,league:l.league,selection:l.selection,betType:l.betType,odds:parseFloat(l.odds)})),odds:parseFloat(totalOdds.toFixed(2)),stake,date:document.getElementById('p-date').value,result,profit,notes:document.getElementById('p-notes').value};
+  bets.unshift(bet);saveBetsLocal();closeModal('parlayModal');renderTracker();showToast(`🎯 Multipla ${valid.length} gambe salvata!`,'ok');
+}
+
+/* ══════════ TRACKER ══════════ */
+function setBetView(v,el){curBetView=v;document.querySelectorAll('.btab').forEach(b=>b.classList.remove('on','multi-on'));el.classList.add(v==='parlay'?'multi-on':'on');renderBetTable();}
+function setBetFilter(f,el){curBetFilter=f;document.querySelectorAll('.bfil').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderBetTable();}
+
+function renderTracker(){renderStats();renderChart();renderDistribution();renderBetTable();}
+
+function renderStats(){
+  const all=bets;
+  const settled=all.filter(b=>b.result!=='P');
+  const won=all.filter(b=>b.result==='W').length;
+  const lost=all.filter(b=>b.result==='L').length;
+  const wr=settled.length?Math.round(won/settled.length*100):0;
+  const totalProfit=settled.reduce((s,b)=>s+b.profit,0);
+  const totalStaked=settled.reduce((s,b)=>s+b.stake,0);
+  const roi=totalStaked?((totalProfit/totalStaked)*100).toFixed(1):0;
+  const avgStake=all.length?(all.reduce((s,b)=>s+b.stake,0)/all.length).toFixed(1):0;
+  document.getElementById('ts-total').textContent=all.length;
+  document.getElementById('ts-won').textContent=won;
+  document.getElementById('ts-lost').textContent=lost;
+  document.getElementById('ts-wr').textContent=`${wr}% win rate`;
+  const el=document.getElementById('ts-bal');
+  el.textContent=`${totalProfit>=0?'+':''}€${totalProfit.toFixed(2)}`;
+  el.style.color=totalProfit>0?'var(--green)':totalProfit<0?'var(--red)':'var(--muted)';
+  document.getElementById('ts-roi').textContent=`ROI ${roi}%`;
+  document.getElementById('ts-avg-stake').textContent=`€${avgStake}`;
+}
+
+function renderChart(){
+  const settled=bets.filter(b=>b.result!=='P').slice().reverse();
+  const canvas=document.getElementById('betChart');
+  if(!canvas)return;
+  const wrap=canvas.parentElement;
+  const W=wrap.clientWidth||600, H=230;
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  if(!settled.length){
+    ctx.fillStyle='#3d5570';ctx.font='14px var(--font-body)';ctx.textAlign='center';
+    ctx.fillText('Nessun dato disponibile — aggiungi scommesse completate',W/2,H/2);
+    return;
+  }
+
+  /* build series */
+  let labels=[],data=[],ptColors=[];
+  if(chartMode==='balance'){
+    let run=0;
+    settled.forEach((b,i)=>{run+=b.profit;labels.push(b.isParlay?'🎯'+(i+1):(b.match?.split(' vs ')[0]||('#'+(i+1))).slice(0,8));data.push(parseFloat(run.toFixed(2)));ptColors.push(run>=0?'#00f090':'#ff3d5a');});
+  }else if(chartMode==='roi'){
+    let ts=0,tp=0;
+    settled.forEach((b,i)=>{ts+=b.stake;tp+=b.profit;labels.push(b.isParlay?'🎯'+(i+1):(b.match?.split(' vs ')[0]||('#'+(i+1))).slice(0,8));data.push(ts?parseFloat(((tp/ts)*100).toFixed(1)):0);ptColors.push(tp>=0?'#00f090':'#ff3d5a');});
+  }else{
+    settled.forEach((b,i)=>{labels.push(b.isParlay?'🎯'+(i+1):(b.match?.split(' vs ')[0]||('#'+(i+1))).slice(0,8));data.push(b.odds);ptColors.push(b.result==='W'?'#00f090':b.isParlay?'#b06cff':'#ff3d5a');});
+  }
+
+  const PAD={t:18,r:20,b:44,l:52};
+  const cW=W-PAD.l-PAD.r, cH=H-PAD.t-PAD.b;
+  const n=data.length;
+  const minV=Math.min(...data,0), maxV=Math.max(...data,0.01);
+  const range=maxV-minV||1;
+  const toX=i=>PAD.l+(i/(Math.max(n-1,1)))*cW;
+  const toY=v=>PAD.t+cH-(((v-minV)/range)*cH);
+
+  /* grid lines */
+  const steps=5;
+  ctx.strokeStyle='rgba(28,42,58,.7)';ctx.lineWidth=1;
+  for(let s=0;s<=steps;s++){
+    const v=minV+(range*s/steps);
+    const y=toY(v);
+    ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(PAD.l+cW,y);ctx.stroke();
+    ctx.fillStyle='#5a7090';ctx.font='10px monospace';ctx.textAlign='right';
+    const lbl=chartMode==='balance'?`€${v.toFixed(0)}`:chartMode==='roi'?`${v.toFixed(0)}%`:`${v.toFixed(2)}`;
+    ctx.fillText(lbl,PAD.l-6,y+3);
+  }
+
+  /* zero line */
+  if(minV<0&&maxV>0){const y=toY(0);ctx.strokeStyle='rgba(255,255,255,.12)';ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(PAD.l+cW,y);ctx.stroke();ctx.setLineDash([]);}
+
+  if(chartMode==='odds'){
+    /* BAR chart */
+    const bw=Math.max(4,Math.min(32,(cW/n)-4));
+    data.forEach((v,i)=>{
+      const x=toX(i)-bw/2, yv=toY(v), bh=toY(0)-yv;
+      ctx.fillStyle=ptColors[i]+'99';
+      ctx.strokeStyle=ptColors[i];ctx.lineWidth=1;
+      ctx.fillRect(x,yv,bw,Math.max(bh,2));
+      ctx.strokeRect(x,yv,bw,Math.max(bh,2));
+    });
+  } else {
+    /* LINE chart with fill */
+    const grad=ctx.createLinearGradient(0,PAD.t,0,PAD.t+cH);
+    grad.addColorStop(0,'rgba(0,229,255,.18)');grad.addColorStop(1,'rgba(0,229,255,0)');
+    ctx.beginPath();ctx.moveTo(toX(0),toY(data[0]));
+    for(let i=1;i<n;i++){
+      const x0=toX(i-1),y0=toY(data[i-1]),x1=toX(i),y1=toY(data[i]);
+      const cpx=(x0+x1)/2;
+      ctx.bezierCurveTo(cpx,y0,cpx,y1,x1,y1);
+    }
+    /* fill */
+    ctx.lineTo(toX(n-1),PAD.t+cH);ctx.lineTo(toX(0),PAD.t+cH);ctx.closePath();
+    ctx.fillStyle=grad;ctx.fill();
+    /* line */
+    ctx.beginPath();ctx.moveTo(toX(0),toY(data[0]));
+    for(let i=1;i<n;i++){const x0=toX(i-1),y0=toY(data[i-1]),x1=toX(i),y1=toY(data[i]);const cpx=(x0+x1)/2;ctx.bezierCurveTo(cpx,y0,cpx,y1,x1,y1);}
+    ctx.strokeStyle='rgba(0,229,255,.9)';ctx.lineWidth=2;ctx.stroke();
+    /* dots */
+    data.forEach((v,i)=>{
+      ctx.beginPath();ctx.arc(toX(i),toY(v),4,0,Math.PI*2);
+      ctx.fillStyle=ptColors[i];ctx.fill();
+      ctx.strokeStyle='#07090d';ctx.lineWidth=1.5;ctx.stroke();
+    });
+  }
+
+  /* x labels */
+  ctx.fillStyle='#5a7090';ctx.font='9px sans-serif';ctx.textAlign='center';
+  const step=Math.ceil(n/12);
+  labels.forEach((l,i)=>{if(i%step===0||i===n-1)ctx.fillText(l,toX(i),H-PAD.b+14);});
+
+  /* hover tooltip */
+  canvas._data={labels,data,ptColors,toX,toY,chartMode,PAD,W,H};
+  canvas.onmousemove=e=>{
+    const rect=canvas.getBoundingClientRect();
+    const mx=e.clientX-rect.left;
+    let closest=-1,minDist=40;
+    data.forEach((_,i)=>{const d=Math.abs(toX(i)-mx);if(d<minDist){minDist=d;closest=i;}});
+    renderChart._hover=closest;
+    // redraw with tooltip
+    renderChartTooltip(canvas,ctx,closest);
+  };
+  canvas.onmouseleave=()=>{renderChartTooltip(canvas,ctx,-1);};
+}
+
+function renderChartTooltip(canvas,ctx,idx){
+  const d=canvas._data;if(!d)return;
+  // just draw a vertical line + tooltip box
+  const {labels,data,ptColors,toX,toY,chartMode,PAD,W,H}=d;
+  // re-render is expensive; just overlay
+  if(idx<0){canvas._tipCanvas&&(canvas._tipCanvas.style.display='none');return;}
+  let tip=canvas._tipCanvas;
+  if(!tip){
+    tip=document.createElement('canvas');
+    tip.style.cssText='position:absolute;top:0;left:0;pointer-events:none';
+    canvas.parentElement.style.position='relative';
+    canvas.parentElement.appendChild(tip);
+    canvas._tipCanvas=tip;
+  }
+  tip.width=canvas.width;tip.height=canvas.height;
+  tip.style.display='block';
+  const tc=tip.getContext('2d');
+  tc.clearRect(0,0,tip.width,tip.height);
+  const x=toX(idx),y=toY(data[idx]);
+  tc.strokeStyle='rgba(0,229,255,.4)';tc.lineWidth=1;tc.setLineDash([3,3]);
+  tc.beginPath();tc.moveTo(x,PAD.t);tc.lineTo(x,PAD.t+(H-PAD.t-PAD.b));tc.stroke();tc.setLineDash([]);
+  const v=data[idx];
+  const vStr=chartMode==='balance'?`€${v>=0?'+':''}${v.toFixed(2)}`:chartMode==='roi'?`${v.toFixed(1)}%`:`@${v.toFixed(2)}`;
+  const lbl=`${labels[idx]}  ${vStr}`;
+  tc.font='bold 11px sans-serif';
+  const tw=tc.measureText(lbl).width+16;
+  let tx=x+8; if(tx+tw>tip.width-8)tx=x-tw-8;
+  const ty=Math.max(PAD.t+4,y-28);
+  tc.fillStyle='rgba(12,16,24,.92)';tc.strokeStyle='rgba(0,229,255,.3)';tc.lineWidth=1;
+  tc.beginPath();tc.roundRect(tx,ty,tw,22,5);tc.fill();tc.stroke();
+  tc.fillStyle='#ddeeff';tc.fillText(lbl,tx+8,ty+15);
+}
+
+function setChartMode(m,el){chartMode=m;document.querySelectorAll('.ctog').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderChart();}
+
+function renderDistribution(){
+  const types=['1X2','Goal/NoGoal','Over/Under','MultiGoal','Handicap','BTTS','Multipla'];
+  const typeMap={'1X2':'btag-1x2','Goal/NoGoal':'btag-goal','Over/Under':'btag-over','MultiGoal':'btag-multi','Handicap':'btag-hcp','BTTS':'btag-btts','Multipla':'btag-parlay'};
+  const colors={'1X2':'var(--cyan)','Goal/NoGoal':'var(--green)','Over/Under':'var(--gold)','MultiGoal':'var(--purple)','Handicap':'var(--orange)','BTTS':'var(--red)','Multipla':'var(--purple)'};
+  const row=document.getElementById('distRow');
+  if(!bets.length){row.innerHTML='';return;}
+  const html=types.map(t=>{
+    const group=t==='Multipla'?bets.filter(b=>b.isParlay):bets.filter(b=>!b.isParlay&&b.type===t);
+    if(!group.length)return'';
+    const won=group.filter(b=>b.result==='W').length;
+    const settled=group.filter(b=>b.result!=='P').length;
+    const wr=settled?Math.round(won/settled*100):0;
+    const pct=bets.length?Math.round(group.length/bets.length*100):0;
+    return`<div class="dist-card"><div class="dist-top"><div class="dist-type ${typeMap[t]||''}" style="color:${colors[t]}">${t}</div><div class="dist-count">${group.length}</div></div><div class="dist-bar-bg"><div class="dist-bar" style="width:${pct}%;background:${colors[t]}"></div></div><div class="dist-stats"><span>WR: <strong>${wr}%</strong></span><span><strong>${pct}%</strong> del tot.</span></div></div>`;
+  }).filter(Boolean).join('');
+  row.innerHTML=html||'';
+}
+
+function renderBetTable(){
+  let filtered=bets;
+  if(curBetView==='single')filtered=bets.filter(b=>!b.isParlay);
+  else if(curBetView==='parlay')filtered=bets.filter(b=>b.isParlay);
+  if(curBetFilter!=='all')filtered=filtered.filter(b=>b.result===curBetFilter);
+  const wrap=document.getElementById('betTableWrap');
+  document.getElementById('bthTitle').textContent=curBetView==='parlay'?'Multipli':'Storico Scommesse';
+  if(!filtered.length){wrap.innerHTML=`<div class="no-bets"><div class="nbi">📋</div><div>${bets.length?'Nessuna scommessa per questo filtro.':'Nessuna scommessa. Aggiungi la prima!'}</div></div>`;return;}
+  const typeMap={'1X2':'btag-1x2','Goal/NoGoal':'btag-goal','Over/Under':'btag-over','MultiGoal':'btag-multi','Handicap':'btag-hcp','BTTS':'btag-btts','ML':'btag-1x2','Combo':'btag-multi','Altro':'btag-uo'};
+  const rows=filtered.map(b=>{
+    const rc=b.result==='W'?'res-w':b.result==='L'?'res-l':'res-p';
+    const ri=b.result==='W'?'✅ Vinta':b.result==='L'?'❌ Persa':'⏳ Attesa';
+    const pc=b.profit>0?'profit-pos':b.profit<0?'profit-neg':'profit-zero';
+    const ps=b.profit>0?`+€${b.profit.toFixed(2)}`:b.profit<0?`-€${Math.abs(b.profit).toFixed(2)}`:'—';
+    if(b.isParlay){
+      const legCount=b.legs?.length||0;
+      const legSummary=b.legs?.map(l=>`${l.match?.split(' vs ')?.[0]||'?'} (${l.selection})`).join(', ')||'';
+      return `<tr class="parlay-row" data-pid="${b.id}">
+        <td>${b.date||'—'}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:2px">
+            <span class="btag btag-parlay">🎯 MULTIPLA</span>
+            <span style="font-size:.7rem;color:var(--purple)">${legCount} gambe</span>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${legSummary}</div>
+        </td>
+        <td><button class="expand-btn" onclick="toggleParlayExpand(${b.id})">▼ Gambe</button></td>
+        <td><span style="font-family:monospace;font-weight:700;color:var(--gold)">@${parseFloat(b.odds).toFixed(2)}</span></td>
+        <td style="font-family:monospace">€${b.stake}</td>
+        <td><span class="res-pill ${rc}">${ri}</span></td>
+        <td class="${pc}">${ps}</td>
+        <td>
+          <button class="del-btn" onclick="openEditParlay(${b.id})" title="Modifica">✏️</button>
+          <button class="del-btn" onclick="deleteBet(${b.id})" title="Elimina">🗑️</button>
+        </td>
+      </tr>
+      <tr class="parlay-legs-expand" id="plexp-${b.id}" style="display:none">
+        <td class="parlay-legs-cell" colspan="8">
+          <div class="parlay-legs">
+            ${(b.legs||[]).map((l,i)=>`<div class="pl-leg"><div class="pl-leg-num">${i+1}</div><div class="pl-leg-text"><span style="color:var(--text);font-weight:500">${l.match}</span> · <span class="btag ${typeMap[l.betType]||'btag-uo'}" style="font-size:.62rem">${l.betType}</span> · ${l.selection}</div><div class="pl-leg-odds-sm">@${parseFloat(l.odds).toFixed(2)}</div></div>`).join('')}
+          </div>
+        </td>
+      </tr>`;
+    }
+    return `<tr>
+      <td>${b.date||'—'}</td>
+      <td><div style="font-weight:600;font-size:.81rem">${b.match}</div><div style="font-size:.7rem;color:var(--muted)">${b.league||''}</div></td>
+      <td><span class="btag ${typeMap[b.type]||'btag-uo'}">${b.type}</span><div style="font-size:.72rem;color:var(--muted);margin-top:2px">${b.selection||''}</div></td>
+      <td><span style="font-family:monospace;font-weight:700;color:var(--gold)">@${parseFloat(b.odds).toFixed(2)}</span></td>
+      <td style="font-family:monospace">€${b.stake}</td>
+      <td><span class="res-pill ${rc}">${ri}</span></td>
+      <td class="${pc}">${ps}</td>
+      <td><button class="del-btn" onclick="openEditBet(${b.id})">✏️</button><button class="del-btn" onclick="deleteBet(${b.id})">🗑️</button></td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML=`<table class="bet-table"><thead><tr><th>Data</th><th>Partita/Descrizione</th><th>Tipo</th><th>Quota</th><th>Puntata</th><th>Esito</th><th>Profitto</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function toggleParlayExpand(id){
+  const row=document.getElementById(`plexp-${id}`);
+  if(row)row.style.display=row.style.display==='none'?'table-row':'none';
+  const btn=document.querySelector(`[data-pid="${id}"] .expand-btn`);
+  if(btn)btn.textContent=row?.style.display==='none'?'▼ Gambe':'▲ Nascondi';
+}
+
+function openEditParlay(id){
+  const b=bets.find(x=>x.id===id);if(!b||!b.isParlay)return;
+  parlayLegs=b.legs.map(l=>({match:l.match||'',league:l.league||'',selection:l.selection||'',betType:l.betType||'1X2',odds:l.odds||''}));
+  document.getElementById('parlayModalTitle').textContent='Modifica Multipla';
+  document.getElementById('p-stake').value=b.stake||'';
+  document.getElementById('p-date').value=b.date||'';
+  document.getElementById('p-result').value=b.result||'P';
+  document.getElementById('p-notes').value=b.notes||'';
+  editingBetId=id;
+  renderParlayLegsForm();openModal('parlayModal');
+}
+
+function saveParlayFromModal(){
+  const stake=parseFloat(document.getElementById('p-stake').value);
+  if(isNaN(stake)||stake<=0){showToast('Inserisci la puntata','err');return;}
+  const valid=parlayLegs.filter(l=>l.match.trim()&&parseFloat(l.odds)>=1);
+  if(valid.length<2){showToast('Inserisci almeno 2 selezioni valide','err');return;}
+  const totalOdds=valid.reduce((a,l)=>a*parseFloat(l.odds),1);
+  const result=document.getElementById('p-result').value;
+  const profit=result==='W'?parseFloat(((totalOdds-1)*stake).toFixed(2)):result==='L'?-stake:0;
+  const bet={id:editingBetId||Date.now(),isParlay:true,legs:valid.map(l=>({match:l.match,league:l.league,selection:l.selection,betType:l.betType,odds:parseFloat(l.odds)})),odds:parseFloat(totalOdds.toFixed(2)),stake,date:document.getElementById('p-date').value,result,profit,notes:document.getElementById('p-notes').value};
+  if(editingBetId){const idx=bets.findIndex(b=>b.id===editingBetId);if(idx>=0)bets[idx]=bet;}else{bets.unshift(bet);}
+  saveBetsLocal();closeModal('parlayModal');renderTracker();showToast(`🎯 Multipla ${valid.length} gambe salvata!`,'ok');editingBetId=null;
+}
+
+/* ══════════ MODAL HELPERS ══════════ */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');editingBetId=null;}
+function closeIfOutside(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+
+/* ══════════ STORAGE ══════════ */
+function saveBetsLocal(){try{localStorage.setItem('bg_bets2',JSON.stringify(bets));}catch(e){}}
+
+/* ══════════ TOAST ══════════ */
+let toastT=null;
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;
+  if(toastT)clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ══════════ DEMO DATA ══════════ */
+function addDemoIfEmpty(){
+  if(bets.length)return;
+  bets=[
+    {id:1,isParlay:false,match:'Inter vs Milan',league:'Serie A',sport:'calcio',type:'1X2',selection:'1 - Vittoria Inter',odds:1.75,stake:20,date:'2026-04-10',result:'W',profit:15.00,notes:'Derby'},
+    {id:2,isParlay:false,match:'Liverpool vs Man City',league:'Premier League',sport:'calcio',type:'Over/Under',selection:'Over 2.5 Gol',odds:1.65,stake:15,date:'2026-04-11',result:'W',profit:9.75,notes:''},
+    {id:3,isParlay:true,legs:[{match:'Bayern vs Dortmund',league:'Bundesliga',selection:'Goal',betType:'Goal/NoGoal',odds:1.45},{match:'Napoli vs Juventus',league:'Serie A',selection:'Vittoria Napoli',betType:'1X2',odds:2.10}],odds:3.05,stake:15,date:'2026-04-12',result:'W',profit:30.75,notes:'Multipla 2 gambe AI'},
+    {id:4,isParlay:false,match:'Real Madrid vs Barcellona',league:'La Liga',sport:'calcio',type:'BTTS',selection:'Entrambe Segnano - Sì',odds:1.55,stake:30,date:'2026-04-14',result:'W',profit:16.50,notes:''},
+    {id:5,isParlay:true,legs:[{match:'Arsenal vs Chelsea',league:'Premier League',selection:'Vittoria Arsenal',betType:'1X2',odds:1.90},{match:'Boston Celtics vs Warriors',league:'NBA',selection:'Over 228.5 punti',betType:'Over/Under',odds:1.85},{match:'Atalanta vs Lazio',league:'Serie A',selection:'Over 2.5 gol',betType:'Over/Under',odds:1.65}],odds:5.78,stake:10,date:'2026-04-15',result:'L',profit:-10.00,notes:'Multipla 3 gambe'},
+    {id:6,isParlay:false,match:'Arsenal vs Chelsea',league:'Premier League',sport:'calcio',type:'Handicap',selection:'Arsenal -1',odds:2.20,stake:15,date:'2026-04-16',result:'W',profit:18.00,notes:''},
+    {id:7,isParlay:false,match:'Atalanta vs Lazio',league:'Serie A',sport:'calcio',type:'MultiGoal',selection:'2-3 gol totali',odds:2.10,stake:10,date:'2026-04-17',result:'P',profit:0,notes:'In attesa'},
+    {id:8,isParlay:true,legs:[{match:'Real Madrid vs Barcellona',league:'La Liga',selection:'Over 2.5 gol',betType:'Over/Under',odds:1.60},{match:'Bayern vs Dortmund',league:'Bundesliga',selection:'Vittoria Bayern',betType:'1X2',odds:1.55}],odds:2.48,stake:20,date:'2026-04-18',result:'P',profit:0,notes:'Multipla di oggi'},
+  ];
+  saveBetsLocal();
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+/* ══════════ START ══════════ */
+addDemoIfEmpty();init();
+</script>
+</body>
+</html>
